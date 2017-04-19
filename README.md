@@ -1,5 +1,6 @@
-# Ng2Ngrx
+# ngrx-individuals
 
+An application demonstrating adding/removing/modifying/initializing entities in a list that is managed by ngrx/store.
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.0.0.
 
 ## Development server

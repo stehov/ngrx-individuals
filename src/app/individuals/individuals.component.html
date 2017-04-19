@@ -1,0 +1,17 @@
+<h2>Load saved individuals</h2>
+
+<button type="button" (click)="loadDefaultIndividuals()">Load</button>
+
+<h2>Current individuals</h2>
+
+<div *ngFor="let individual of individuals$ | async; trackBy: custom">
+  <app-individual [individual]="individual" (removeindividual)="removeIndividual($event)" (updateindividual)="updateIndividual($event)"></app-individual>
+</div>
+
+<div>
+  <button type="button" (click)="addIndividual()">Add</button>
+</div>
+
+<div>
+  <pre>{{ store$ | async | json }}</pre>
+</div>

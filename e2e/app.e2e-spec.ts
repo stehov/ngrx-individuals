@@ -1,6 +1,6 @@
 import { Ng2NgrxPage } from './app.po';
 
-describe('ng2-ngrx App', () => {
+describe('ngrx-individuals App', () => {
   let page: Ng2NgrxPage;
 
   beforeEach(() => {
