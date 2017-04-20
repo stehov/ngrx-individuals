@@ -3,32 +3,32 @@ import { Action } from '@ngrx/store';
 import { Individual } from '../models/individual.model';
 
 export const ActionTypes = {
-  ADD_individual: '[individual] Add individual',
-  REMOVE_individual: '[individual] Remove individual',
-  UPDATE_individual: '[individual] Update individual',
-  LOAD_SAVED_individualS: '[individuals] Load Saved individuals'
+  ADD_INDIVIDUAL: '[Individual] Add Individual',
+  REMOVE_INDIVIDUAL: '[individual] Remove Individual',
+  UPDATE_INDIVIDUAL: '[Individual] Update Individual',
+  LOAD_SAVED_INDIVIDUALS: '[Individual] Load Saved Individuals'
 };
 
-export class AddindividualAction implements Action {
-  type = ActionTypes.ADD_individual;
+export class AddIndividualAction implements Action {
+  type = ActionTypes.ADD_INDIVIDUAL;
 
   constructor(public payload: Individual) { }
 }
 
-export class RemoveindividualAction implements Action {
-  type = ActionTypes.REMOVE_individual;
+export class RemoveIndividualAction implements Action {
+  type = ActionTypes.REMOVE_INDIVIDUAL;
 
   constructor(public payload: Individual) { }
 }
 
-export class UpdateindividualAction implements Action {
-  type = ActionTypes.UPDATE_individual;
+export class UpdateIndividualAction implements Action {
+  type = ActionTypes.UPDATE_INDIVIDUAL;
 
   constructor(public payload: Individual) { }
 }
 
-export class LoadSavedindividualsAction implements Action {
-  type = ActionTypes.LOAD_SAVED_individualS;
+export class LoadSavedIndividualsAction implements Action {
+  type = ActionTypes.LOAD_SAVED_INDIVIDUALS;
 
-  constructor() { }
+  constructor(public payload: Individual[]) { }
 }

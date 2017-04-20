@@ -23,19 +23,19 @@ export class individualsService {
   }
 
   addIndividual(): void {
-    this.store.dispatch({ type: actions.ActionTypes.ADD_individual, payload: { id: UUID.UUID(), firstName: '', lastName: '' } });
+    this.store.dispatch({ type: actions.ActionTypes.ADD_INDIVIDUAL, payload: { id: UUID.UUID(), firstName: '', lastName: '' } });
   }
 
   removeIndividual(individual): void {
-    this.store.dispatch({ type: actions.ActionTypes.REMOVE_individual, payload: individual });
+    this.store.dispatch({ type: actions.ActionTypes.REMOVE_INDIVIDUAL, payload: individual });
   }
 
   updateIndividual(value: any): void {
     const individualToUpdate: Individual = { id: value.id, firstName: value.firstName, lastName: value.lastName };
-    this.store.dispatch({ type: actions.ActionTypes.UPDATE_individual, payload: individualToUpdate });
+    this.store.dispatch({ type: actions.ActionTypes.UPDATE_INDIVIDUAL, payload: individualToUpdate });
   }
 
   loadSavedIndividuals(): void {
-    this.store.dispatch({ type: actions.ActionTypes.LOAD_SAVED_individualS, payload: defaultIndividuals });
+    this.store.dispatch({ type: actions.ActionTypes.LOAD_SAVED_INDIVIDUALS, payload: defaultIndividuals });
   }
 }

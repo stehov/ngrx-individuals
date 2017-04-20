@@ -7,15 +7,15 @@ export const initialState: Individual[] = [];
 
 export const reducer: ActionReducer<Individual[]> = (state: Individual[] = initialState, action: Action) => {
   switch (action.type) {
-    case actions.ActionTypes.ADD_individual:
+    case actions.ActionTypes.ADD_INDIVIDUAL:
       return [...state, action.payload];
 
-    case actions.ActionTypes.REMOVE_individual:
+    case actions.ActionTypes.REMOVE_INDIVIDUAL:
       return state.filter((individual: Individual) => {
         return individual.id !== action.payload.id;
       });
 
-    case actions.ActionTypes.UPDATE_individual: {
+    case actions.ActionTypes.UPDATE_INDIVIDUAL: {
       let newState = [];
 
       state.forEach(item => {
@@ -29,7 +29,7 @@ export const reducer: ActionReducer<Individual[]> = (state: Individual[] = initi
       return newState;
     }
 
-    case actions.ActionTypes.LOAD_SAVED_individualS:
+    case actions.ActionTypes.LOAD_SAVED_INDIVIDUALS:
       return action.payload;
 
     default:
