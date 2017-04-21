@@ -12,21 +12,15 @@ export const reducer: ActionReducer<Individual[]> = (state: Individual[] = initi
 
     case actions.ActionTypes.REMOVE_INDIVIDUAL:
       return state.filter((individual: Individual) => {
-        return individual.id !== action.payload.id;
+        return individual.id !== action.payload;
       });
 
     case actions.ActionTypes.UPDATE_INDIVIDUAL: {
-      let newState = [];
+      return updateIndividual(state, action.payload);
+    }
 
-      state.forEach(item => {
-        if (item.id === action.payload.id) {
-          newState = [...newState, Object.assign({}, item, { firstName: action.payload.firstName, lastName: action.payload.lastName })];
-        } else {
-          newState = [...newState, item]
-        }
-      });
-
-      return newState;
+    case actions.ActionTypes.UPDATE_INDIVIDUALS: {
+      return updateIndividual(state, action.payload);
     }
 
     case actions.ActionTypes.LOAD_SAVED_INDIVIDUALS:
@@ -35,4 +29,18 @@ export const reducer: ActionReducer<Individual[]> = (state: Individual[] = initi
     default:
       return state;
   }
+};
+
+const updateIndividual = (state, payload) => {
+  let newState = [];
+
+  state.forEach(item => {
+    if (item.id === payload.id) {
+      newState = [...newState, Object.assign({}, item, { firstName: payload.firstName, lastName: payload.lastName })];
+    } else {
+      newState = [...newState, item]
+    }
+  });
+
+  return newState;
 };

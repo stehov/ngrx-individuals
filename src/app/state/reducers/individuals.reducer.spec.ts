@@ -35,7 +35,7 @@ describe('applicants reducer', () => {
 
   it('should remove applicant', () => {
     const initialState = [individual1];
-    const action = new RemoveIndividualAction(individual1);
+    const action = new RemoveIndividualAction(individual1.id);
     const result = reducer(initialState, action);
 
     expect(result.length).toEqual(0);

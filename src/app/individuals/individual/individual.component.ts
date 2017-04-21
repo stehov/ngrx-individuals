@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/debounceTime';
 
 import { Individual } from '../../state/models/individual.model';
@@ -11,10 +10,9 @@ import { Individual } from '../../state/models/individual.model';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IndividualComponent implements OnInit {
-  group: FormGroup;
+  form: FormGroup;
   @Input() individual: Individual;
-  @Output('removeindividual') removeindividualEmitter: EventEmitter<Individual> = new EventEmitter<Individual>();
-  @Output('updateindividual') updateindividualEmitter: EventEmitter<Individual> = new EventEmitter<Individual>();
+  @Output('updateIndividual') updateIndividualEmitter: EventEmitter<Individual> = new EventEmitter<Individual>();
 
   constructor(private formBuilder: FormBuilder) { }
 
@@ -24,7 +22,7 @@ export class IndividualComponent implements OnInit {
   }
 
   initForm() {
-    this.group = this.formBuilder.group({
+    this.form = this.formBuilder.group({
       id: this.individual.id,
       firstName: this.individual.firstName,
       lastName: this.individual.lastName
@@ -32,18 +30,14 @@ export class IndividualComponent implements OnInit {
   }
 
   handleChanges() {
-    this.group.valueChanges
+    this.form.valueChanges
       .debounceTime(350)
       .subscribe(value => {
-        this.updateindividual(value);
+        this.updateIndividual(value);
       });
   }
 
-  removeindividual(individual: Individual) {
-    this.removeindividualEmitter.emit(this.individual);
-  }
-
-  updateindividual(value) {
-    this.updateindividualEmitter.emit(value);
+  updateIndividual(value) {
+    this.updateIndividualEmitter.emit({ id: value.id, firstName: value.firstName, lastName: value.lastName });
   }
 }

@@ -14,7 +14,7 @@ const defaultIndividuals: Individual[] = [
 ];
 
 @Injectable()
-export class individualsService {
+export class IndividualsService {
 
   constructor(private store: Store<State>) { }
 
@@ -22,12 +22,16 @@ export class individualsService {
     return this.store.select('individuals');
   }
 
-  addIndividual(): void {
-    this.store.dispatch({ type: actions.ActionTypes.ADD_INDIVIDUAL, payload: { id: UUID.UUID(), firstName: '', lastName: '' } });
+  initializeIndividual(): Individual {
+    return { id: UUID.UUID(), firstName: '', lastName: '' };
   }
 
-  removeIndividual(individual): void {
-    this.store.dispatch({ type: actions.ActionTypes.REMOVE_INDIVIDUAL, payload: individual });
+  addIndividual(individual: Individual): void {
+    this.store.dispatch({ type: actions.ActionTypes.ADD_INDIVIDUAL, payload: individual });
+  }
+
+  removeIndividual(individualId): void {
+    this.store.dispatch({ type: actions.ActionTypes.REMOVE_INDIVIDUAL, payload: individualId });
   }
 
   updateIndividual(value: any): void {
