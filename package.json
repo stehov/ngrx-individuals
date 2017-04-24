@@ -21,12 +21,13 @@
     "@angular/platform-browser-dynamic": "^4.0.2",
     "@angular/router": "^4.0.2",
     "@ngrx/core": "^1.2.0",
+    "@ngrx/effects": "2.0.3",
     "@ngrx/store-devtools": "3.2.4",
     "@ngrx/store": "^2.2.1",
     "angular2-uuid": "^1.1.1",
     "core-js": "^2.4.1",
     "rxjs": "^5.1.0",
-    "zone.js": "^0.8.4"
+    "zone.js": "0.8.4"
   },
   "devDependencies": {
     "@angular/cli": "1.0.0",

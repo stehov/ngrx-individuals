@@ -19,24 +19,25 @@ export const reducer: ActionReducer<Individual[]> = (state: Individual[] = initi
       return updateIndividual(state, action.payload);
     }
 
-    case actions.ActionTypes.UPDATE_INDIVIDUALS: {
-      return updateIndividual(state, action.payload);
+    case actions.ActionTypes.SET_INDIVIDUALS: {
+      return action.payload;
     }
 
-    case actions.ActionTypes.LOAD_SAVED_INDIVIDUALS:
+    case actions.ActionTypes.LOAD_INDIVIDUALS_SUCCESS: {
       return action.payload;
+    }
 
     default:
       return state;
   }
 };
 
-const updateIndividual = (state, payload) => {
+const updateIndividual = (state, individual) => {
   let newState = [];
 
   state.forEach(item => {
-    if (item.id === payload.id) {
-      newState = [...newState, Object.assign({}, item, { firstName: payload.firstName, lastName: payload.lastName })];
+    if (item.id === individual.id) {
+      newState = [...newState, Object.assign({}, item, { firstName: individual.firstName, lastName: individual.lastName })];
     } else {
       newState = [...newState, item]
     }

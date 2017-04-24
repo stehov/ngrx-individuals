@@ -2,9 +2,10 @@ import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { FormGroup, FormArray, FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
+import { UUID } from 'angular2-uuid';
 
-import { State } from '../state/reducers';
-import { IndividualsService } from '../state/services/individuals.service';
+import * as reducers from '../state/reducers';
+import * as actions from '../state/actions/individual.actions';
 import { Individual } from '../state/models/individual.model';
 
 @Component({
@@ -13,14 +14,15 @@ import { Individual } from '../state/models/individual.model';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IndividualsComponent implements OnInit {
-  individuals$: Observable<Individual[]> = this.individualsService.getIndividuals();
+  individuals$: Observable<Individual[]>;
   store$ = this.store.select(store => store);
   form: FormGroup;
   individualsFormArray: FormArray;
 
-  constructor(private individualsService: IndividualsService,
-    private store: Store<State>,
-    private formBuilder: FormBuilder) { }
+  constructor(private store: Store<reducers.State>,
+    private formBuilder: FormBuilder) {
+    this.individuals$ = store.select(state => state.individuals);
+  }
 
   ngOnInit() {
     this.form = this.formBuilder.group({
@@ -50,23 +52,26 @@ export class IndividualsComponent implements OnInit {
   }
 
   addIndividual(): void {
-    const individual = this.individualsService.initializeIndividual();
-    this.individualsService.addIndividual(individual);
+    this.store.dispatch(new actions.AddIndividualAction({ id: UUID.UUID(), firstName: '', lastName: '' }));
+  }
+
+  updateIndividuals(): void {
+    this.store.dispatch(new actions.SetIndividualsAction(this.form.value.individuals));
   }
 
   removeIndividual(id: string): void {
-    this.individualsService.removeIndividual(id);
+    this.store.dispatch(new actions.RemoveIndividualAction(id));
   }
 
   updateIndividual(value: any): void {
-    this.individualsService.updateIndividual(value);
+    this.store.dispatch(new actions.UpdateIndividualAction(value));
   }
 
   loadDefaultIndividuals(): void {
-    this.individualsService.loadSavedIndividuals();
+    this.store.dispatch(new actions.LoadIndividualsAction());
   }
 
-  custom(index, item) {
-    return index;
+  customTrackBy(index, individual: Individual) {
+    return individual.id;
   }
 }

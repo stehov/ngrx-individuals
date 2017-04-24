@@ -5,7 +5,7 @@ import {
   AddIndividualAction,
   RemoveIndividualAction,
   UpdateIndividualAction,
-  LoadSavedIndividualsAction
+  SetIndividualsAction
 } from '../actions/individual.actions';
 
 const individual1: Individual = {
@@ -50,7 +50,7 @@ describe('applicants reducer', () => {
   });
 
   it('should load saved individuals', () => {
-    const action = new LoadSavedIndividualsAction(individuals);
+    const action = new SetIndividualsAction(individuals);
     const result = reducer(undefined, action);
 
     expect(result).toBe(individuals);

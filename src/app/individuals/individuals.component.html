@@ -4,7 +4,7 @@
 
 <h2>Current individuals (Store)</h2>
 
-<div *ngFor="let individual of individuals$ | async; trackBy: custom">
+<div *ngFor="let individual of individuals$ | async; trackBy: customTrackBy">
   <app-individual [individual]="individual" (updateIndividual)="updateIndividual($event)">
     <button type="button" (click)="removeIndividual(individual.id)">x</button>
   </app-individual>
@@ -13,7 +13,7 @@
 <h2>Current individuals (Form)</h2>
 
 <form [formGroup]="form">
-  <div formArrayName="individuals" *ngFor="let individual of individualsFormArray.controls; let i = index; trackBy: custom">
+  <div formArrayName="individuals" *ngFor="let individual of individualsFormArray.controls; let i = index">
     <app-individual-reactive [formGroup]="individual">
       <button type="button" (click)="removeIndividual(individual.get('id').value)">x</button>
     </app-individual-reactive>
@@ -22,6 +22,7 @@
 
 <div>
   <button type="button" (click)="addIndividual()">Add</button>
+  <button type="button" (click)="updateIndividuals(form.value)">Save</button>
 </div>
 
 <h2>Store</h2>

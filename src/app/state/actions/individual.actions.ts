@@ -6,8 +6,9 @@ export const ActionTypes = {
   ADD_INDIVIDUAL: '[Individual] Add Individual',
   REMOVE_INDIVIDUAL: '[individual] Remove Individual',
   UPDATE_INDIVIDUAL: '[Individual] Update Individual',
-  UPDATE_INDIVIDUALS: '[Individual] Update Individuals',
-  LOAD_SAVED_INDIVIDUALS: '[Individual] Load Saved Individuals'
+  SET_INDIVIDUALS: '[Individual] Set Individuals',
+  LOAD_INDIVIDUALS: '[Individual] Load Individuals',
+  LOAD_INDIVIDUALS_SUCCESS: '[Individual] Load Individuals Success'
 };
 
 export class AddIndividualAction implements Action {
@@ -28,14 +29,20 @@ export class UpdateIndividualAction implements Action {
   constructor(public payload: Individual) { }
 }
 
-export class UpdateIndividualsAction implements Action {
-  type = ActionTypes.UPDATE_INDIVIDUALS;
+export class SetIndividualsAction implements Action {
+  type = ActionTypes.SET_INDIVIDUALS;
 
   constructor(public payload: Individual[]) { }
 }
 
-export class LoadSavedIndividualsAction implements Action {
-  type = ActionTypes.LOAD_SAVED_INDIVIDUALS;
+export class LoadIndividualsAction implements Action {
+  type = ActionTypes.LOAD_INDIVIDUALS;
+
+  constructor() { }
+}
+
+export class LoadIndividualsSuccessAction implements Action {
+  type = ActionTypes.LOAD_INDIVIDUALS_SUCCESS;
 
   constructor(public payload: Individual[]) { }
 }
