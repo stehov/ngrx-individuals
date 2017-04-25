@@ -6,13 +6,17 @@ import { environment } from '../../../environments/environment';
 import { Individual } from '../models/individual.model';
 import * as individuals from './individuals.reducer';
 
+import { ApplicationForm } from '../models/application-form';
+import * as applicationForm from './application-form.reducer';
+
 export interface State {
   individuals: Individual[],
-  products: string[]
+  applicationForm: ApplicationForm
 }
 
 const reducers = {
-  individuals: individuals.reducer
+  individuals: individuals.reducer,
+  applicationForm: applicationForm.reducer
 };
 
 const developmentReducer: ActionReducer<any> = compose(storeFreeze, combineReducers)(reducers);

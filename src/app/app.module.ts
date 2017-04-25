@@ -14,13 +14,15 @@ import { IndividualReactiveComponent } from './individuals/individual/individual
 import { IndividualEffects } from './state/effects/individual.effects';
 import { IndividualsService } from './api/individuals.service';
 import { reducer } from './state/reducers';
+import { AgeRequirementComponent } from './individuals/age-requirement/age-requirement.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     IndividualsComponent,
     IndividualComponent,
-    IndividualReactiveComponent
+    IndividualReactiveComponent,
+    AgeRequirementComponent
   ],
   imports: [
     BrowserModule,

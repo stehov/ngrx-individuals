@@ -25,7 +25,8 @@ export class IndividualComponent implements OnInit {
     this.form = this.formBuilder.group({
       id: this.individual.id,
       firstName: this.individual.firstName,
-      lastName: this.individual.lastName
+      lastName: this.individual.lastName,
+      age: this.individual.age
     });
   }
 
@@ -38,6 +39,6 @@ export class IndividualComponent implements OnInit {
   }
 
   updateIndividual(value) {
-    this.updateIndividualEmitter.emit({ id: value.id, firstName: value.firstName, lastName: value.lastName });
+    this.updateIndividualEmitter.emit({ id: value.id, firstName: value.firstName, lastName: value.lastName, age: value.age });
   }
 }

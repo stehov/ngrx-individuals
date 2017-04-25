@@ -4,11 +4,10 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Store, StoreModule } from '@ngrx/store';
 
 import { reducer } from '../state/reducers';
-import { IndividualsService } from '../state/services/individuals.service';
-import { IndividualsServiceMock } from '../state/services/individuals.service.mock';
 import { IndividualsComponent } from './individuals.component';
 import { IndividualComponentMock } from './individual/individual.component.mock';
 import { IndividualReactiveComponentMock } from './individual/individual-reactive.component.mock';
+import { AgeRequirementComponentMock } from './age-requirement/age-requirement.component.mock';
 
 describe('IndividualsComponent', () => {
   beforeEach(async(() => {
@@ -20,11 +19,11 @@ describe('IndividualsComponent', () => {
       declarations: [
         IndividualsComponent,
         IndividualComponentMock,
-        IndividualReactiveComponentMock
+        IndividualReactiveComponentMock,
+        AgeRequirementComponentMock
       ],
       providers: [
-        FormBuilder,
-        { provide: IndividualsService, useClass: IndividualsServiceMock }
+        FormBuilder
       ]
     }).compileComponents();
   }));

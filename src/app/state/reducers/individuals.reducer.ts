@@ -37,7 +37,7 @@ const updateIndividual = (state, individual) => {
 
   state.forEach(item => {
     if (item.id === individual.id) {
-      newState = [...newState, Object.assign({}, item, { firstName: individual.firstName, lastName: individual.lastName })];
+      newState = [...newState, Object.assign({}, item, { firstName: individual.firstName, lastName: individual.lastName, age: individual.age })];
     } else {
       newState = [...newState, item]
     }
