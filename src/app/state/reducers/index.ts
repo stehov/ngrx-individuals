@@ -10,8 +10,8 @@ import { ApplicationForm } from '../models/application-form';
 import * as applicationForm from './application-form.reducer';
 
 export interface State {
-  individuals: Individual[],
-  applicationForm: ApplicationForm
+  individuals: Individual[];
+  applicationForm: ApplicationForm;
 }
 
 const reducers = {

@@ -1,17 +1,15 @@
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
-
-import * as reducers from '../../state/reducers/index';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-age-requirement',
   templateUrl: './age-requirement.component.html'
 })
 export class AgeRequirementComponent implements OnInit {
+  allowUnderageIndividualsValue: boolean;
   @Input() set allowUnderageIndividuals(allowUnderageIndividuals) {
     this.allowUnderageIndividualsValue = allowUnderageIndividuals;
   }
-  allowUnderageIndividualsValue: boolean;
-  @Output('allowUnderageIndividualsValueChanged') allowUnderageIndividualsValueChangedEmitter = new EventEmitter<boolean>();
+  @Output() allowUnderageIndividualsValueChanged = new EventEmitter<boolean>();
 
   constructor() { }
 
@@ -19,6 +17,6 @@ export class AgeRequirementComponent implements OnInit {
   }
 
   checkboxValueChanged(value: boolean) {
-    this.allowUnderageIndividualsValueChangedEmitter.emit(value);
+    this.allowUnderageIndividualsValueChanged.emit(value);
   }
 }

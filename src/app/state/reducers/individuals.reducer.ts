@@ -5,6 +5,26 @@ import { Individual } from '../models/individual.model';
 
 export const initialState: Individual[] = [];
 
+// I recommend using array.map ~ LR
+const updateIndividual = (state, individual) => {
+  let newState = [];
+
+  state.forEach(item => {
+    if (item.id === individual.id) {
+      newState = [...newState, Object.assign({}, item, {
+        firstName: individual.firstName,
+        lastName: individual.lastName,
+        age: individual.age
+      })
+      ];
+    } else {
+      newState = [...newState, item];
+    }
+  });
+
+  return newState;
+};
+
 export const reducer: ActionReducer<Individual[]> = (state: Individual[] = initialState, action: Action) => {
   switch (action.type) {
     case actions.ActionTypes.ADD_INDIVIDUAL:
@@ -30,18 +50,4 @@ export const reducer: ActionReducer<Individual[]> = (state: Individual[] = initi
     default:
       return state;
   }
-};
-
-const updateIndividual = (state, individual) => {
-  let newState = [];
-
-  state.forEach(item => {
-    if (item.id === individual.id) {
-      newState = [...newState, Object.assign({}, item, { firstName: individual.firstName, lastName: individual.lastName, age: individual.age })];
-    } else {
-      newState = [...newState, item]
-    }
-  });
-
-  return newState;
 };

@@ -1,5 +1,5 @@
-import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
-import { FormGroup, FormArray, AbstractControl, FormBuilder, ValidatorFn, ValidationErrors } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 import { UUID } from 'angular2-uuid';
@@ -15,7 +15,9 @@ const individualsAgeValidator = (allowUnderageIndividuals) => {
   return (form: AbstractControl): ValidationErrors | null => {
     let individual18OrOverExists: boolean;
 
-    if (allowUnderageIndividuals) return null;
+    if (allowUnderageIndividuals) {
+      return null;
+    }
 
     const individualsArray = form.get('individuals') as FormArray;
 
@@ -26,8 +28,8 @@ const individualsAgeValidator = (allowUnderageIndividuals) => {
       }
     });
 
-    return !individual18OrOverExists ? { individualArrayValidatorError: true } : null;
-  }
+    return !individual18OrOverExists ? {individualArrayValidatorError: true} : null;
+  };
 };
 
 @Component({
@@ -43,7 +45,7 @@ export class IndividualsComponent implements OnInit {
   individualsFormArray: FormArray;
 
   constructor(private store: Store<reducers.State>,
-    private formBuilder: FormBuilder) {
+              private formBuilder: FormBuilder) {
     this.individuals$ = store.select(state => state.individuals);
     this.applicationForm$ = store.select(state => state.applicationForm);
   }
@@ -83,7 +85,7 @@ export class IndividualsComponent implements OnInit {
   }
 
   addIndividual(): void {
-    this.store.dispatch(new individualActions.AddIndividualAction({ id: UUID.UUID(), firstName: '', lastName: '', age: undefined }));
+    this.store.dispatch(new individualActions.AddIndividualAction({id: UUID.UUID(), firstName: '', lastName: '', age: undefined}));
   }
 
   updateIndividuals(value: any): void {

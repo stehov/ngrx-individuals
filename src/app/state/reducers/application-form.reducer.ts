@@ -1,4 +1,4 @@
-import { ActionReducer, Action, Store } from '@ngrx/store';
+import { Action, ActionReducer } from '@ngrx/store';
 
 import * as actions from '../actions/application-form.actions';
 import { ApplicationForm } from '../models/application-form';

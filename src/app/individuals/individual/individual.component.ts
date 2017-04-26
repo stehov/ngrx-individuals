@@ -12,7 +12,7 @@ import { Individual } from '../../state/models/individual.model';
 export class IndividualComponent implements OnInit {
   form: FormGroup;
   @Input() individual: Individual;
-  @Output('updateIndividual') updateIndividualEmitter: EventEmitter<Individual> = new EventEmitter<Individual>();
+  @Output() updateIndividual: EventEmitter<Individual> = new EventEmitter<Individual>();
 
   constructor(private formBuilder: FormBuilder) { }
 
@@ -34,11 +34,11 @@ export class IndividualComponent implements OnInit {
     this.form.valueChanges
       .debounceTime(350)
       .subscribe(value => {
-        this.updateIndividual(value);
+        this.onIndividualUpdated(value);
       });
   }
 
-  updateIndividual(value) {
-    this.updateIndividualEmitter.emit({ id: value.id, firstName: value.firstName, lastName: value.lastName, age: value.age });
+  onIndividualUpdated(value) {
+    this.updateIndividual.emit({ id: value.id, firstName: value.firstName, lastName: value.lastName, age: value.age });
   }
 }

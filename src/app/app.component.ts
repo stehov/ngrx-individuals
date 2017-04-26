@@ -1,5 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
