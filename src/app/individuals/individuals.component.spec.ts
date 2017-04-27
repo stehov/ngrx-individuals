@@ -6,7 +6,6 @@ import { Store, StoreModule } from '@ngrx/store';
 import { reducer } from '../state/reducers';
 import { IndividualsComponent } from './individuals.component';
 import { IndividualComponentMock } from './individual/individual.component.mock';
-import { IndividualReactiveComponentMock } from './individual/individual-reactive.component.mock';
 import { AgeRequirementComponentMock } from './age-requirement/age-requirement.component.mock';
 
 describe('IndividualsComponent', () => {
@@ -19,7 +18,6 @@ describe('IndividualsComponent', () => {
       declarations: [
         IndividualsComponent,
         IndividualComponentMock,
-        IndividualReactiveComponentMock,
         AgeRequirementComponentMock
       ],
       providers: [

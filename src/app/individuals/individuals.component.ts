@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 import { UUID } from 'angular2-uuid';
@@ -10,27 +10,7 @@ import { Individual } from '../state/models/individual.model';
 
 import * as appFormActions from '../state/actions/application-form.actions';
 import { ApplicationForm } from '../state/models/application-form';
-
-const individualsAgeValidator = (allowUnderageIndividuals) => {
-  return (form: AbstractControl): ValidationErrors | null => {
-    let individual18OrOverExists: boolean;
-
-    if (allowUnderageIndividuals) {
-      return null;
-    }
-
-    const individualsArray = form.get('individuals') as FormArray;
-
-    individualsArray.controls.forEach(individualFormGroup => {
-      const age = individualFormGroup.get('age').value;
-      if (age && +age >= 18) {
-        individual18OrOverExists = true;
-      }
-    });
-
-    return !individual18OrOverExists ? {individualArrayValidatorError: true} : null;
-  };
-};
+import { INDIVIDUALS_VALIDATOR } from '../shared/individuals.validator';
 
 @Component({
   selector: 'app-individuals',
@@ -45,34 +25,38 @@ export class IndividualsComponent implements OnInit {
   individualsFormArray: FormArray;
 
   constructor(private store: Store<reducers.State>,
-              private formBuilder: FormBuilder) {
+    private formBuilder: FormBuilder) {
     this.individuals$ = store.select(state => state.individuals);
     this.applicationForm$ = store.select(state => state.applicationForm);
   }
 
   ngOnInit() {
+    this.initForm();
+    this.handleIndividualsChanges();
+    this.handleApplicationFormChanges();
+  }
+
+  initForm() {
     this.form = this.formBuilder.group({
       individuals: this.createIndividualsFormArray()
-    });
-
-    this.individuals$.subscribe(individuals => {
-      this.form.setControl('individuals', this.createIndividualsFormArray());
-
-      individuals.forEach(individual => {
-        this.individualsFormArray.push(this.createIndividualFormGroup(individual));
-      });
-    });
-
-    this.applicationForm$.subscribe(applicationForm => {
-      this.form.clearValidators();
-      this.form.setValidators(individualsAgeValidator(applicationForm.allowUnderageIndividuals));
-      this.form.updateValueAndValidity();
     });
   }
 
   createIndividualsFormArray(): FormArray {
     this.individualsFormArray = this.formBuilder.array([]);
     return this.individualsFormArray;
+  }
+
+  initIndividualsFormArray(individuals: Individual[]) {
+    this.form.setControl('individuals', this.createIndividualsFormArray());
+
+    individuals.forEach(individual => {
+      this.individualsFormArray.push(this.createIndividualControl(individual));
+    });
+  }
+
+  createIndividualControl(individual: Individual): FormControl {
+    return this.formBuilder.control(individual);
   }
 
   createIndividualFormGroup(individual: Individual): FormGroup {
@@ -84,20 +68,34 @@ export class IndividualsComponent implements OnInit {
     });
   }
 
+  handleIndividualsChanges() {
+    this.individuals$.subscribe(individuals => this.initIndividualsFormArray(individuals));
+  }
+
+  handleApplicationFormChanges() {
+    this.applicationForm$.subscribe(applicationForm => {
+      this.form.clearValidators();
+      this.form.setValidators(INDIVIDUALS_VALIDATOR.individualsAgeValidator(applicationForm.allowUnderageIndividuals));
+      this.form.updateValueAndValidity();
+    });
+  }
+
   addIndividual(): void {
-    this.store.dispatch(new individualActions.AddIndividualAction({id: UUID.UUID(), firstName: '', lastName: '', age: undefined}));
+    this.updateIndividuals(this.form.value);
+    this.store.dispatch(new individualActions.AddIndividualAction({ id: UUID.UUID(), firstName: '', lastName: '', age: undefined }));
   }
 
   updateIndividuals(value: any): void {
-    this.store.dispatch(new individualActions.SetIndividualsAction(value));
+    this.store.dispatch(new individualActions.SetIndividualsAction(value.individuals));
   }
 
   removeIndividual(id: string): void {
+    this.updateIndividuals(this.form.value);
     this.store.dispatch(new individualActions.RemoveIndividualAction(id));
   }
 
   updateIndividual(value: any): void {
-    this.store.dispatch(new individualActions.UpdateIndividualAction(value));
+    this.store.dispatch(new individualActions.UpdateIndividualAction(value.individuals));
   }
 
   loadDefaultIndividuals(): void {
@@ -108,7 +106,7 @@ export class IndividualsComponent implements OnInit {
     this.store.dispatch(new appFormActions.SetAllowUnderageIndividuals($event));
   }
 
-  customTrackBy(index, individual: Individual) {
-    return individual.id;
+  customTrackBy(index, item: FormControl) {
+    return item.value.id;
   }
 }

@@ -6,8 +6,10 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/switchMap';
 
+import * as applicationForm from '../actions/application-form.actions';
 import * as individual from '../actions/individual.actions';
 import { IndividualsService } from '../../api/individuals.service';
+
 
 @Injectable()
 export class IndividualEffects {
@@ -15,6 +17,11 @@ export class IndividualEffects {
     .ofType(individual.ActionTypes.LOAD_INDIVIDUALS)
     .switchMap(() => this.individualsService.all())
     .map(individuals => new individual.LoadIndividualsSuccessAction(individuals))
+  ;
+
+  @Effect() save$ = this.actions$
+    .ofType(individual.ActionTypes.SET_INDIVIDUALS)
+    .map(individuals => new applicationForm.SetSaved(true))
   ;
 
   constructor(

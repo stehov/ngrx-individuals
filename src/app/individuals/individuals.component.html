@@ -4,21 +4,13 @@
 
 <app-age-requirement (allowUnderageIndividualsValueChanged)="updateApplicationForm($event)"></app-age-requirement>
 
-<h2>Current individuals (Store)</h2>
-
-<div *ngFor="let individual of individuals$ | async; trackBy: customTrackBy">
-  <app-individual [individual]="individual" (updateIndividual)="updateIndividual($event)">
-    <button type="button" (click)="removeIndividual(individual.id)">x</button>
-  </app-individual>
-</div>
-
-<h2>Current individuals (Reactive Form)</h2>
+<h2>Current individuals</h2>
 
 <form [formGroup]="form">
-  <div formArrayName="individuals" *ngFor="let individual of individualsFormArray.controls; let i = index">
-    <app-individual-reactive [formGroup]="individual">
-      <button type="button" (click)="removeIndividual(individual.get('id').value)">x</button>
-    </app-individual-reactive>
+  <div formArrayName="individuals" *ngFor="let individual of individualsFormArray.controls; let i = index; trackBy: customTrackBy">
+    <app-individual [formControl]="individual">
+      <button type="button" (click)="removeIndividual(individual.value.id)">x</button>
+    </app-individual>
   </div>
   <div *ngIf="form.hasError('individualArrayValidatorError')" style="color: red;">Must have a minimum of one individual 18 years of age or over</div>
 </form>
@@ -34,7 +26,7 @@
   <pre>{{ store$ | async | json }}</pre>
 </div>
 
-<h2>Reactive Form</h2>
+<h2>Form</h2>
 
 <div>
   <pre>{{ form.value | json }}</pre>

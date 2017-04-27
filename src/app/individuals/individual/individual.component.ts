@@ -1,20 +1,30 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, forwardRef } from '@angular/core';
+import { FormGroup, FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
 import 'rxjs/add/operator/debounceTime';
 
+import { AbstractValueAccessor } from '../../shared/abstract-value-accessor';
 import { Individual } from '../../state/models/individual.model';
+
+const INDIVIDUAL_VALUE_ACCESSOR = {
+  provide: NG_VALUE_ACCESSOR,
+  useExisting: forwardRef(() => IndividualComponent),
+  multi: true
+};
 
 @Component({
   selector: 'app-individual',
   templateUrl: './individual.component.html',
+  providers: [
+    INDIVIDUAL_VALUE_ACCESSOR
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class IndividualComponent implements OnInit {
+export class IndividualComponent extends AbstractValueAccessor implements OnInit {
   form: FormGroup;
-  @Input() individual: Individual;
-  @Output() updateIndividual: EventEmitter<Individual> = new EventEmitter<Individual>();
 
-  constructor(private formBuilder: FormBuilder) { }
+  constructor(private formBuilder: FormBuilder) {
+    super();
+  }
 
   ngOnInit() {
     this.initForm();
@@ -23,22 +33,21 @@ export class IndividualComponent implements OnInit {
 
   initForm() {
     this.form = this.formBuilder.group({
-      id: this.individual.id,
-      firstName: this.individual.firstName,
-      lastName: this.individual.lastName,
-      age: this.individual.age
+      id: '',
+      firstName: '',
+      lastName: '',
+      age: ''
     });
+  }
+
+  writeValue(value): void {
+    this.form.patchValue(value);
   }
 
   handleChanges() {
     this.form.valueChanges
-      .debounceTime(350)
       .subscribe(value => {
-        this.onIndividualUpdated(value);
+        this.value = value;
       });
-  }
-
-  onIndividualUpdated(value) {
-    this.updateIndividual.emit({ id: value.id, firstName: value.firstName, lastName: value.lastName, age: value.age });
   }
 }

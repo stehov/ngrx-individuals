@@ -9,7 +9,6 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { AppComponent } from './app.component';
 import { IndividualsComponent } from './individuals/individuals.component';
 import { IndividualComponent } from './individuals/individual/individual.component';
-import { IndividualReactiveComponent } from './individuals/individual/individual-reactive.component';
 
 import { IndividualEffects } from './state/effects/individual.effects';
 import { IndividualsService } from './api/individuals.service';
@@ -21,7 +20,6 @@ import { AgeRequirementComponent } from './individuals/age-requirement/age-requi
     AppComponent,
     IndividualsComponent,
     IndividualComponent,
-    IndividualReactiveComponent,
     AgeRequirementComponent
   ],
   imports: [
