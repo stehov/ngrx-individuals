@@ -10,13 +10,25 @@ const savedIndividuals: Individual[] = [
   { id: UUID.UUID(), firstName: 'Robert', lastName: 'Smith', age: 31 }
 ];
 
+const getIndividuals = () => {
+  return savedIndividuals
+    .map(individual => {
+      return {
+        id: individual.id,
+        firstName: individual.firstName,
+        lastName: individual.lastName,
+        age: individual.age
+      };
+    });
+};
+
 @Injectable()
 export class IndividualsService {
 
   all(): Observable<Individual[]> {
     return new Observable((observer) => {
       setTimeout(() => {
-        observer.next(savedIndividuals);
+        observer.next(getIndividuals());
       }, 550);
     });
   }

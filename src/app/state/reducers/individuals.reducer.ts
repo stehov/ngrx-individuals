@@ -1,9 +1,17 @@
 import { ActionReducer, Action, Store } from '@ngrx/store';
+import { UUID } from 'angular2-uuid';
 
 import * as actions from '../actions/individual.actions';
 import { Individual } from '../models/individual.model';
 
-export const initialState: Individual[] = [];
+export const initialState: Individual[] = [
+  {
+    id: UUID.UUID(),
+    firstName: 'Test',
+    lastName: 'Person',
+    age: undefined
+  }
+];
 
 export const reducer: ActionReducer<Individual[]> = (state: Individual[] = initialState, action: Action) => {
   switch (action.type) {

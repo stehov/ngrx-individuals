@@ -32,7 +32,7 @@ describe('individual reducer', () => {
     const action = new AddIndividualAction(individual1);
     const result = reducer(undefined, action);
 
-    expect(result[0]).toBe(individual1);
+    expect(result[1]).toBe(individual1);
   });
 
   it('should remove individual', () => {

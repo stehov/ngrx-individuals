@@ -1,54 +1,72 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, Input, Output, EventEmitter, forwardRef } from '@angular/core';
+import { FormArray, FormControl, NG_VALUE_ACCESSOR, NG_VALIDATORS, Validator } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
-import { Store } from '@ngrx/store';
-import { UUID } from 'angular2-uuid';
+import { Subscription } from 'rxjs/Subscription';
 
-import * as reducers from '../state/reducers';
-import * as individualActions from '../state/actions/individual.actions';
+import { AbstractValueAccessor } from '../shared/abstract-value-accessor';
 import { Individual } from '../state/models/individual.model';
 
-import * as appFormActions from '../state/actions/application-form.actions';
-import { ApplicationForm } from '../state/models/application-form';
-import { INDIVIDUALS_VALIDATOR } from '../shared/individuals.validator';
+const INDIVIDUALS_VALUE_ACCESSOR = {
+  provide: NG_VALUE_ACCESSOR,
+  useExisting: forwardRef(() => IndividualsComponent),
+  multi: true
+};
+
+const INDIVIDUALS_VALIDATORS = {
+  provide: NG_VALIDATORS,
+  useExisting: forwardRef(() => IndividualsComponent),
+  multi: true
+};
 
 @Component({
   selector: 'app-individuals',
   templateUrl: './individuals.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  providers: [
+    INDIVIDUALS_VALUE_ACCESSOR,
+    INDIVIDUALS_VALIDATORS
+  ]
 })
-export class IndividualsComponent implements OnInit {
-  individuals$: Observable<Individual[]>;
-  applicationForm$: Observable<ApplicationForm>;
-  store$ = this.store.select(store => store);
-  form: FormGroup;
+export class IndividualsComponent extends AbstractValueAccessor implements OnInit, OnDestroy, Validator {
+  @Input() individuals: Observable<Individual[]>;
+  @Output() individualAdded: EventEmitter<any> = new EventEmitter();
+  @Output() individualRemoved: EventEmitter<string> = new EventEmitter();
+  @Output() individualUpdated: EventEmitter<Individual> = new EventEmitter();
+  individualsSubscription: Subscription;
   individualsFormArray: FormArray;
 
-  constructor(private store: Store<reducers.State>,
-    private formBuilder: FormBuilder) {
-    this.individuals$ = store.select(state => state.individuals);
-    this.applicationForm$ = store.select(state => state.applicationForm);
+  constructor() {
+    super();
   }
 
   ngOnInit() {
-    this.initForm();
-    this.handleIndividualsChanges();
-    this.handleApplicationFormChanges();
+    this.individualsFormArray = this.createIndividualsFormArray();
+    this.handleChanges();
+    this.setUpSubscriptions();
   }
 
-  initForm() {
-    this.form = this.formBuilder.group({
-      individuals: this.createIndividualsFormArray()
+  ngOnDestroy() {
+    this.individualsSubscription.unsubscribe();
+  }
+
+  setUpSubscriptions() {
+    this.individualsSubscription = this.individuals.subscribe(individuals => {
+      this.initIndividualsFormArray(individuals);
     });
   }
 
   createIndividualsFormArray(): FormArray {
-    this.individualsFormArray = this.formBuilder.array([]);
+    this.individualsFormArray = new FormArray([]);
     return this.individualsFormArray;
   }
 
+  clearIndividualsFormArray() {
+    while (this.individualsFormArray.length) {
+      this.individualsFormArray.removeAt(0);
+    }
+  }
+
   initIndividualsFormArray(individuals: Individual[]) {
-    this.form.setControl('individuals', this.createIndividualsFormArray());
+    this.clearIndividualsFormArray();
 
     individuals.forEach(individual => {
       this.individualsFormArray.push(this.createIndividualControl(individual));
@@ -56,54 +74,34 @@ export class IndividualsComponent implements OnInit {
   }
 
   createIndividualControl(individual: Individual): FormControl {
-    return this.formBuilder.control(individual);
+    const individualControl = new FormControl(individual);
+
+    individualControl.valueChanges
+      .debounceTime(350)
+      .subscribe(value => {
+        this.individualUpdated.emit(value);
+      });
+
+    return individualControl;
   }
 
-  createIndividualFormGroup(individual: Individual): FormGroup {
-    return this.formBuilder.group({
-      id: individual.id,
-      firstName: individual.firstName,
-      lastName: individual.lastName,
-      age: individual.age
-    });
-  }
-
-  handleIndividualsChanges() {
-    this.individuals$.subscribe(individuals => this.initIndividualsFormArray(individuals));
-  }
-
-  handleApplicationFormChanges() {
-    this.applicationForm$.subscribe(applicationForm => {
-      this.form.clearValidators();
-      this.form.setValidators(INDIVIDUALS_VALIDATOR.individualsAgeValidator(applicationForm.allowUnderageIndividuals));
-      this.form.updateValueAndValidity();
-    });
+  handleChanges() {
+    this.individualsFormArray.valueChanges
+      .subscribe(value => {
+        this.value = value;
+      });
   }
 
   addIndividual(): void {
-    this.updateIndividuals(this.form.value);
-    this.store.dispatch(new individualActions.AddIndividualAction({ id: UUID.UUID(), firstName: '', lastName: '', age: undefined }));
-  }
-
-  updateIndividuals(value: any): void {
-    this.store.dispatch(new individualActions.SetIndividualsAction(value.individuals));
+    this.individualAdded.emit();
   }
 
   removeIndividual(id: string): void {
-    this.updateIndividuals(this.form.value);
-    this.store.dispatch(new individualActions.RemoveIndividualAction(id));
+    this.individualRemoved.emit(id);
   }
 
-  updateIndividual(value: any): void {
-    this.store.dispatch(new individualActions.UpdateIndividualAction(value.individuals));
-  }
-
-  loadDefaultIndividuals(): void {
-    this.store.dispatch(new individualActions.LoadIndividualsAction());
-  }
-
-  updateApplicationForm($event) {
-    this.store.dispatch(new appFormActions.SetAllowUnderageIndividuals($event));
+  validate(c: FormControl) {
+    return this.individualsFormArray.valid ? null : { incompleteApplicants: true };
   }
 
   customTrackBy(index, item: FormControl) {

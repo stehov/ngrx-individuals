@@ -1,7 +1,9 @@
 import { TestBed, async } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { Store, StoreModule } from '@ngrx/store';
 
+import { reducer } from './state/reducers';
 import { RouterOutletDirectiveMock } from '../testing/router.mock';
 import { AppComponent } from './app.component';
 import { IndividualsComponentMock } from './individuals/individuals.component.mock';
@@ -10,7 +12,8 @@ describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        StoreModule.provideStore(reducer)
       ],
       declarations: [
         AppComponent,

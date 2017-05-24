@@ -3,7 +3,6 @@ import { RouterModule } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Store, StoreModule } from '@ngrx/store';
 
-import { reducer } from '../state/reducers';
 import { IndividualsComponent } from './individuals.component';
 import { IndividualComponentMock } from './individual/individual.component.mock';
 import { AgeRequirementComponentMock } from './age-requirement/age-requirement.component.mock';
@@ -12,8 +11,7 @@ describe('IndividualsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        ReactiveFormsModule,
-        StoreModule.provideStore(reducer)
+        ReactiveFormsModule
       ],
       declarations: [
         IndividualsComponent,

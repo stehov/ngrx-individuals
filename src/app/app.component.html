@@ -1,3 +1,23 @@
 <div class="app">
-  <app-individuals></app-individuals>
+
+  <form [formGroup]="form">
+    <h2>Current individuals</h2>
+    <app-individuals [individuals]="individuals$" formControlName="individuals"
+      (individualAdded)="onAddIndividual()" (individualUpdated)="onUpdateIndividual($event)" (individualRemoved)="onRemoveIndividual($event)"></app-individuals>
+    <div *ngIf="form.hasError('individualArrayValidatorError')" style="color: red;">Must have a minimum of one individual 18 years of age or over</div>
+  </form>
+
+  <h2>Form</h2>
+
+  <pre>Form (parent) is valid? <b>{{form.valid}}</b></pre>
+
+  <div>
+    <pre>{{ form.value | json }}</pre>
+  </div>
+
+  <h2>Store</h2>
+
+  <div>
+    <pre>{{ store$ | async | json }}</pre>
+  </div>
 </div>

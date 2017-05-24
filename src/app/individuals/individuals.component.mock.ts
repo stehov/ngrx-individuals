@@ -5,8 +5,10 @@ import { NgModule, Component, Input, Output, EventEmitter } from '@angular/core'
   template: ''
 })
 export class IndividualsComponentMock {
-  @Input() individual: any;
-  @Output('updateindividual') updateindividualEmitter: EventEmitter<any> = new EventEmitter<any>();
+  @Input() individuals: any;
+  @Output() individualAdded: EventEmitter<any> = new EventEmitter();
+  @Output() individualRemoved: EventEmitter<any> = new EventEmitter();
+  @Output() individualUpdated: EventEmitter<any> = new EventEmitter();
 }
 
 @NgModule({

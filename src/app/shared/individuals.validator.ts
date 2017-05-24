@@ -8,7 +8,7 @@ function individualsAgeValidator(allowUnderageIndividuals): ValidatorFn {
       return null;
     }
 
-    const individualsArray = c.get('individuals') as FormArray;
+    const individualsArray = c as FormArray;
 
     individualsArray.controls.forEach(individual => {
       const age = +individual.value.age;

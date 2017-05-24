@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, forwardRef } from '@angular/core';
-import { FormGroup, FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { Component, OnInit, Input, Output, EventEmitter, forwardRef } from '@angular/core';
+import { FormControl, FormGroup, FormBuilder, NG_VALUE_ACCESSOR, NG_VALIDATORS, Validator, Validators } from '@angular/forms';
 import 'rxjs/add/operator/debounceTime';
 
 import { AbstractValueAccessor } from '../../shared/abstract-value-accessor';
@@ -11,15 +11,21 @@ const INDIVIDUAL_VALUE_ACCESSOR = {
   multi: true
 };
 
+const INDIVIDUAL_VALIDATORS = {
+  provide: NG_VALIDATORS,
+  useExisting: forwardRef(() => IndividualComponent),
+  multi: true
+};
+
 @Component({
   selector: 'app-individual',
   templateUrl: './individual.component.html',
   providers: [
-    INDIVIDUAL_VALUE_ACCESSOR
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    INDIVIDUAL_VALUE_ACCESSOR,
+    INDIVIDUAL_VALIDATORS
+  ]
 })
-export class IndividualComponent extends AbstractValueAccessor implements OnInit {
+export class IndividualComponent extends AbstractValueAccessor implements OnInit, Validator {
   form: FormGroup;
 
   constructor(private formBuilder: FormBuilder) {
@@ -34,14 +40,14 @@ export class IndividualComponent extends AbstractValueAccessor implements OnInit
   initForm() {
     this.form = this.formBuilder.group({
       id: '',
-      firstName: '',
-      lastName: '',
-      age: ''
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      age: ['', Validators.required]
     });
   }
 
   writeValue(value): void {
-    this.form.patchValue(value);
+    this.form.patchValue(value, { emitEvent: false });
   }
 
   handleChanges() {
@@ -49,5 +55,9 @@ export class IndividualComponent extends AbstractValueAccessor implements OnInit
       .subscribe(value => {
         this.value = value;
       });
+  }
+
+  validate(c: FormControl) {
+    return this.form.valid ? null : { invalidIndividual: true };
   }
 }
