@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, forwardRef, ChangeDetectorRef } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder, NG_VALUE_ACCESSOR, NG_VALIDATORS, Validator, Validators } from '@angular/forms';
 import 'rxjs/add/operator/debounceTime';
 
@@ -28,7 +28,7 @@ const INDIVIDUAL_VALIDATORS = {
 export class IndividualComponent extends AbstractValueAccessor implements OnInit, Validator {
   form: FormGroup;
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private formBuilder: FormBuilder, private cd: ChangeDetectorRef) {
     super();
   }
 

@@ -1,4 +1,7 @@
-import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, Input, Output, EventEmitter, forwardRef } from '@angular/core';
+import {
+  ChangeDetectionStrategy, Component, OnInit, OnDestroy, Input, Output, EventEmitter, forwardRef,
+  ChangeDetectorRef, ApplicationRef
+} from '@angular/core';
 import { FormArray, FormControl, NG_VALUE_ACCESSOR, NG_VALIDATORS, Validator } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
@@ -34,7 +37,7 @@ export class IndividualsComponent extends AbstractValueAccessor implements OnIni
   individualsSubscription: Subscription;
   individualsFormArray: FormArray;
 
-  constructor() {
+  constructor(private cd: ChangeDetectorRef, private appRef: ApplicationRef) {
     super();
   }
 
@@ -51,6 +54,7 @@ export class IndividualsComponent extends AbstractValueAccessor implements OnIni
   setUpSubscriptions() {
     this.individualsSubscription = this.individuals.subscribe(individuals => {
       this.initIndividualsFormArray(individuals);
+      this.cd.detectChanges();
     });
   }
 
@@ -77,7 +81,6 @@ export class IndividualsComponent extends AbstractValueAccessor implements OnIni
     const individualControl = new FormControl(individual);
 
     individualControl.valueChanges
-      .debounceTime(350)
       .subscribe(value => {
         this.individualUpdated.emit(value);
       });
@@ -94,10 +97,12 @@ export class IndividualsComponent extends AbstractValueAccessor implements OnIni
 
   addIndividual(): void {
     this.individualAdded.emit();
+    this.cd.detectChanges();
   }
 
   removeIndividual(id: string): void {
     this.individualRemoved.emit(id);
+    this.cd.detectChanges();
   }
 
   validate(c: FormControl) {

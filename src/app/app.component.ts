@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
@@ -22,7 +22,7 @@ export class AppComponent implements OnInit {
   store$ = this.store.select(store => store);
 
   constructor(private store: Store<reducers.State>,
-    private formBuilder: FormBuilder) {
+    private formBuilder: FormBuilder, private cd: ChangeDetectorRef) {
     this.individuals$ = store.select(state => state.individuals);
   }
 
