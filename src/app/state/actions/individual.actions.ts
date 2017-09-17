@@ -2,47 +2,51 @@ import { Action } from '@ngrx/store';
 
 import { Individual } from '../models/individual.model';
 
-export const ActionTypes = {
-  ADD_INDIVIDUAL: '[Individual] Add Individual',
-  REMOVE_INDIVIDUAL: '[individual] Remove Individual',
-  UPDATE_INDIVIDUAL: '[Individual] Update Individual',
-  SET_INDIVIDUALS: '[Individual] Set Individuals',
-  LOAD_INDIVIDUALS: '[Individual] Load Individuals',
-  LOAD_INDIVIDUALS_SUCCESS: '[Individual] Load Individuals Success'
-};
+export const ADD_INDIVIDUAL = '[Individual] Add Individual';
+export const REMOVE_INDIVIDUAL = '[individual] Remove Individual';
+export const REMOVE_INDIVIDUAL_BY_ID = '[individual] Remove Individual By ID';
+export const UPDATE_INDIVIDUAL = '[Individual] Update Individual';
+export const LOAD_INDIVIDUALS = '[Individual] Load Individuals';
+export const LOAD_INDIVIDUALS_SUCCESS = '[Individual] Load Individuals Success';
 
 export class AddIndividualAction implements Action {
-  type = ActionTypes.ADD_INDIVIDUAL;
+  readonly type = ADD_INDIVIDUAL;
 
   constructor(public payload: Individual) { }
 }
 
 export class RemoveIndividualAction implements Action {
-  type = ActionTypes.REMOVE_INDIVIDUAL;
+  readonly type = REMOVE_INDIVIDUAL;
+
+  constructor(public payload: Individual) { }
+}
+
+export class RemoveIndividualByIdAction implements Action {
+  readonly type = REMOVE_INDIVIDUAL_BY_ID;
 
   constructor(public payload: string) { }
 }
 
 export class UpdateIndividualAction implements Action {
-  type = ActionTypes.UPDATE_INDIVIDUAL;
+  readonly type = UPDATE_INDIVIDUAL;
 
   constructor(public payload: Individual) { }
 }
 
-export class SetIndividualsAction implements Action {
-  type = ActionTypes.SET_INDIVIDUALS;
-
-  constructor(public payload: Individual[]) { }
-}
-
 export class LoadIndividualsAction implements Action {
-  type = ActionTypes.LOAD_INDIVIDUALS;
+  readonly type = LOAD_INDIVIDUALS;
 
   constructor() { }
 }
 
 export class LoadIndividualsSuccessAction implements Action {
-  type = ActionTypes.LOAD_INDIVIDUALS_SUCCESS;
+  readonly type = LOAD_INDIVIDUALS_SUCCESS;
 
   constructor(public payload: Individual[]) { }
 }
+
+export type Actions = AddIndividualAction |
+  RemoveIndividualAction |
+  UpdateIndividualAction |
+  LoadIndividualsAction |
+  LoadIndividualsSuccessAction;

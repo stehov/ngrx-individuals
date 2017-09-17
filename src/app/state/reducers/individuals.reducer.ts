@@ -1,43 +1,73 @@
 import { ActionReducer, Action, Store } from '@ngrx/store';
 import { UUID } from 'angular2-uuid';
 
-import * as actions from '../actions/individual.actions';
+import * as utils from '../../core/utils';
+import * as fromIndividual from '../actions/individual.actions';
 import { Individual } from '../models/individual.model';
 
-export const initialState: Individual[] = [
-  {
-    id: UUID.UUID(),
-    firstName: 'Test',
-    lastName: 'Person',
-    age: undefined
-  }
-];
+export interface State {
+  ids: string[];
+  entities: { [key: string]: Individual };
+}
 
-export const reducer: ActionReducer<Individual[]> = (state: Individual[] = initialState, action: Action) => {
+const initialState: State = {
+  ids: [],
+  entities: {}
+};
+
+export function reducer(
+  state = initialState,
+  action: fromIndividual.Actions) {
+
   switch (action.type) {
-    case actions.ActionTypes.ADD_INDIVIDUAL:
-      return [...state, action.payload];
 
-    case actions.ActionTypes.REMOVE_INDIVIDUAL:
-      return state.filter((individual: Individual) => {
-        return individual.id !== action.payload;
-      });
+    case fromIndividual.ADD_INDIVIDUAL:
+      return {
+        ids: [...state.ids, action.payload.id],
+        entities: {
+          ...state.entities,
+          [action.payload.id]: action.payload
+        }
+      };
 
-    case actions.ActionTypes.UPDATE_INDIVIDUAL: {
-      return state.map(value => {
-        return value.id === action.payload.id ? Object.assign({}, action.payload) : value;
-      });
+    case fromIndividual.REMOVE_INDIVIDUAL:
+      return {
+        ids: state.ids.filter(id => id !== action.payload.id),
+        entities: utils.removeByKey(state.entities, [action.payload.id])
+      };
+
+    case fromIndividual.UPDATE_INDIVIDUAL: {
+      return {
+        ids: state.ids,
+        entities: {
+          ...state.entities,
+          [action.payload.id]: action.payload
+        }
+      };
     }
 
-    case actions.ActionTypes.SET_INDIVIDUALS: {
-      return action.payload;
-    }
+    case fromIndividual.LOAD_INDIVIDUALS_SUCCESS: {
+      const individuals = action.payload;
+      const ids = individuals.map(i => i.id);
 
-    case actions.ActionTypes.LOAD_INDIVIDUALS_SUCCESS: {
-      return action.payload;
+      const entities = individuals.reduce((e: { [ids: string]: Individual }, individual: Individual) => {
+        return {
+          ...e,
+          [individual.id]: individual
+        };
+      }, {});
+
+      return {
+        ids: ids,
+        entities: entities
+      };
     }
 
     default:
       return state;
   }
 };
+
+export const getIds = (state: State) => state.ids;
+
+export const getEntities = (state: State) => state.entities;

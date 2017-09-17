@@ -27,9 +27,7 @@ export class IndividualsService {
 
   all(): Observable<Individual[]> {
     return new Observable((observer) => {
-      setTimeout(() => {
-        observer.next(getIndividuals());
-      }, 550);
+      observer.next(getIndividuals());
     });
   }
 }

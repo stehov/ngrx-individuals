@@ -3,7 +3,7 @@ import { RouterModule } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Store, StoreModule } from '@ngrx/store';
 
-import { reducer } from './state/reducers';
+import { reducers } from './state/reducers';
 import { RouterOutletDirectiveMock } from '../testing/router.mock';
 import { AppComponent } from './app.component';
 import { IndividualsComponentMock } from './individuals/individuals.component.mock';
@@ -13,7 +13,7 @@ describe('AppComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         ReactiveFormsModule,
-        StoreModule.provideStore(reducer)
+        StoreModule.forRoot(reducers)
       ],
       declarations: [
         AppComponent,

@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, forwardRef } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder, NG_VALUE_ACCESSOR, NG_VALIDATORS, Validator, Validators } from '@angular/forms';
-import 'rxjs/add/operator/debounceTime';
 
 import { AbstractValueAccessor } from '../../shared/abstract-value-accessor';
 import { Individual } from '../../state/models/individual.model';

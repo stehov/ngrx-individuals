@@ -14,39 +14,19 @@ import { ApplicationForm } from './state/models/application-form';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent implements OnInit {
-  form: FormGroup;
   individuals$: Observable<Individual[]>;
   store$ = this.store.select(store => store);
 
   constructor(private store: Store<reducers.State>,
     private formBuilder: FormBuilder) {
-    this.individuals$ = store.select(state => state.individuals);
+    this.individuals$ = store.select(reducers.getIndividuals);
   }
 
-  ngOnInit() {
-    this.initForm();
-  }
-
-  initForm() {
-    this.form = this.formBuilder.group({
-      individuals: ''
-    });
-  }
-
-  onAddIndividual(): void {
-    this.store.dispatch(new individualActions.AddIndividualAction({ id: UUID.UUID(), firstName: '', lastName: '', age: undefined }));
-  }
-
-  onRemoveIndividual(id: string): void {
-    this.store.dispatch(new individualActions.RemoveIndividualAction(id));
-  }
-
-  onUpdateIndividual(value: any): void {
-    this.store.dispatch(new individualActions.UpdateIndividualAction(value));
-  }
+  ngOnInit() { }
 
   loadDefaultIndividuals(): void {
     this.store.dispatch(new individualActions.LoadIndividualsAction());
@@ -54,5 +34,9 @@ export class AppComponent implements OnInit {
 
   updateApplicationForm($event) {
     this.store.dispatch(new appFormActions.SetAllowUnderageIndividuals($event));
+  }
+
+  submit(individualsValid: boolean) {
+    console.log('individuals valid?', individualsValid);
   }
 }

@@ -1,46 +1,34 @@
 import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, Input, Output, EventEmitter, forwardRef } from '@angular/core';
-import { FormArray, FormControl, NG_VALUE_ACCESSOR, NG_VALIDATORS, Validator } from '@angular/forms';
+import { FormArray, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
+import { UUID } from 'angular2-uuid';
+import { Store } from '@ngrx/store';
 
-import { AbstractValueAccessor } from '../shared/abstract-value-accessor';
+import * as reducers from '../state/reducers';
+import * as fromIndividual from '../state/actions/individual.actions';
 import { Individual } from '../state/models/individual.model';
-
-const INDIVIDUALS_VALUE_ACCESSOR = {
-  provide: NG_VALUE_ACCESSOR,
-  useExisting: forwardRef(() => IndividualsComponent),
-  multi: true
-};
-
-const INDIVIDUALS_VALIDATORS = {
-  provide: NG_VALIDATORS,
-  useExisting: forwardRef(() => IndividualsComponent),
-  multi: true
-};
 
 @Component({
   selector: 'app-individuals',
   templateUrl: './individuals.component.html',
-  providers: [
-    INDIVIDUALS_VALUE_ACCESSOR,
-    INDIVIDUALS_VALIDATORS
-  ]
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class IndividualsComponent extends AbstractValueAccessor implements OnInit, OnDestroy, Validator {
-  @Input() individuals: Observable<Individual[]>;
-  @Output() individualAdded: EventEmitter<any> = new EventEmitter();
-  @Output() individualRemoved: EventEmitter<string> = new EventEmitter();
-  @Output() individualUpdated: EventEmitter<Individual> = new EventEmitter();
+export class IndividualsComponent implements OnInit, OnDestroy {
+  individuals$: Observable<Individual[]>;
   individualsSubscription: Subscription;
   individualsFormArray: FormArray;
 
-  constructor() {
-    super();
+  get valid() {
+    return this.individualsFormArray.valid;
+  }
+
+  constructor(private store: Store<reducers.State>) {
+    this.individuals$ = this.store.select(reducers.getIndividuals);
   }
 
   ngOnInit() {
     this.individualsFormArray = this.createIndividualsFormArray();
-    this.handleChanges();
     this.setUpSubscriptions();
   }
 
@@ -49,7 +37,7 @@ export class IndividualsComponent extends AbstractValueAccessor implements OnIni
   }
 
   setUpSubscriptions() {
-    this.individualsSubscription = this.individuals.subscribe(individuals => {
+    this.individualsSubscription = this.individuals$.subscribe(individuals => {
       this.initIndividualsFormArray(individuals);
     });
   }
@@ -77,31 +65,20 @@ export class IndividualsComponent extends AbstractValueAccessor implements OnIni
     const individualControl = new FormControl(individual);
 
     individualControl.valueChanges
-      .debounceTime(350)
       .subscribe(value => {
-        this.individualUpdated.emit(value);
+        this.store.dispatch(new fromIndividual.UpdateIndividualAction(value));
       });
 
     return individualControl;
   }
 
-  handleChanges() {
-    this.individualsFormArray.valueChanges
-      .subscribe(value => {
-        this.value = value;
-      });
-  }
-
   addIndividual(): void {
-    this.individualAdded.emit();
+    const newIndividual = { id: UUID.UUID(), firstName: '', lastName: '', age: undefined };
+    this.store.dispatch(new fromIndividual.AddIndividualAction(newIndividual));
   }
 
   removeIndividual(id: string): void {
-    this.individualRemoved.emit(id);
-  }
-
-  validate(c: FormControl) {
-    return this.individualsFormArray.valid ? null : { incompleteApplicants: true };
+    this.store.dispatch(new fromIndividual.RemoveIndividualByIdAction(id));
   }
 
   customTrackBy(index, item: FormControl) {

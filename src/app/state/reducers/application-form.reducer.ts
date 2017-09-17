@@ -1,6 +1,6 @@
 import { Action, ActionReducer } from '@ngrx/store';
 
-import * as actions from '../actions/application-form.actions';
+import * as fromApplicationForm from '../actions/application-form.actions';
 import { ApplicationForm } from '../models/application-form';
 
 export const initialState: ApplicationForm = {
@@ -8,18 +8,20 @@ export const initialState: ApplicationForm = {
   saved: false
 };
 
-export const reducer: ActionReducer<ApplicationForm> = (state: ApplicationForm = initialState, action: Action) => {
+export function reducer(
+  state = initialState,
+  action: fromApplicationForm.Actions) {
 
   switch (action.type) {
 
-    case actions.ActionTypes.SET_ALLOW_UNDERAGE_INDIVIDUALS: {
+    case fromApplicationForm.SET_ALLOW_UNDERAGE_INDIVIDUALS: {
       return {
         allowUnderageIndividuals: action.payload,
         saved: state.saved
       };
     }
 
-    case actions.ActionTypes.SET_SAVED: {
+    case fromApplicationForm.SET_SAVED: {
       return {
         allowUnderageIndividuals: state.allowUnderageIndividuals,
         saved: action.payload

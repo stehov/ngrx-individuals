@@ -1,31 +1,36 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
-
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/switchMap';
+import { Store } from '@ngrx/store';
 
 import * as applicationForm from '../actions/application-form.actions';
-import * as individual from '../actions/individual.actions';
+import * as fromIndividual from '../actions/individual.actions';
+import * as reducers from '../reducers';
 import { IndividualsService } from '../../api/individuals.service';
-
 
 @Injectable()
 export class IndividualEffects {
+
   @Effect() load$ = this.actions$
-    .ofType(individual.ActionTypes.LOAD_INDIVIDUALS)
+    .ofType(fromIndividual.LOAD_INDIVIDUALS)
     .switchMap(() => this.individualsService.all())
-    .map(individuals => new individual.LoadIndividualsSuccessAction(individuals))
+    .map(individuals => new fromIndividual.LoadIndividualsSuccessAction(individuals))
   ;
 
-  @Effect() save$ = this.actions$
-    .ofType(individual.ActionTypes.SET_INDIVIDUALS)
-    .map(individuals => new applicationForm.SetSaved(true))
-  ;
+  @Effect({ dispatch: false }) removeById$ = this.actions$
+    .ofType(fromIndividual.REMOVE_INDIVIDUAL_BY_ID)
+    .map((action: fromIndividual.RemoveIndividualByIdAction) => action.payload)
+    .withLatestFrom(this.store.select(reducers.getIndividualEntities))
+    .map(([individualId, individualEntities]) => {
+      const individualToRemove = individualEntities[individualId];
+
+      if (!!individualToRemove) {
+        this.store.dispatch(new fromIndividual.RemoveIndividualAction(individualToRemove));
+      }
+    });
 
   constructor(
     private individualsService: IndividualsService,
-    private actions$: Actions
+    private actions$: Actions,
+    private store: Store<reducers.State>
   ) { }
 }
