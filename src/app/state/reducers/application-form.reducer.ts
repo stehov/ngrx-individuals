@@ -4,8 +4,7 @@ import * as fromApplicationForm from '../actions/application-form.actions';
 import { ApplicationForm } from '../models/application-form';
 
 export const initialState: ApplicationForm = {
-  allowUnderageIndividuals: false,
-  saved: false
+  minimumAge: undefined
 };
 
 export function reducer(
@@ -14,17 +13,9 @@ export function reducer(
 
   switch (action.type) {
 
-    case fromApplicationForm.SET_ALLOW_UNDERAGE_INDIVIDUALS: {
+    case fromApplicationForm.SET_MINIMUM_AGE: {
       return {
-        allowUnderageIndividuals: action.payload,
-        saved: state.saved
-      };
-    }
-
-    case fromApplicationForm.SET_SAVED: {
-      return {
-        allowUnderageIndividuals: state.allowUnderageIndividuals,
-        saved: action.payload
+        minimumAge: action.payload
       };
     }
 
@@ -32,3 +23,5 @@ export function reducer(
       return state;
   }
 };
+
+export const getMinimumAge = (state: ApplicationForm) => state.minimumAge;

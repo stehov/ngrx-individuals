@@ -1,4 +1,4 @@
 <div>
-  <label for="allowUnderageIndividuals">Allow individuals under the age of 18?</label>
-  <input id="allowUnderageIndividuals" type="checkbox" (change)="checkboxValueChanged($event.target.checked)" [ngModel]="allowUnderageIndividualsValue">
+  <label>Minimum age allowed:</label>
+  <input type="number" (change)="minimumAgeChanged($event.target.value)" [ngModel]="minimumAge">
 </div>

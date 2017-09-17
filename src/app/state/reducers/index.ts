@@ -3,26 +3,28 @@ import { storeFreeze } from 'ngrx-store-freeze';
 
 import { environment } from '../../../environments/environment';
 import { Individual } from '../models/individual.model';
-import * as fromIndividuals from './individuals.reducer';
+import * as individuals from './individuals.reducer';
 
 import { ApplicationForm } from '../models/application-form';
 import * as applicationForm from './application-form.reducer';
 
 export interface State {
-  individuals: fromIndividuals.State;
+  individuals: individuals.State;
   applicationForm: ApplicationForm;
 }
 
 export const reducers: ActionReducerMap<State> = {
-  individuals: fromIndividuals.reducer,
+  individuals: individuals.reducer,
   applicationForm: applicationForm.reducer
 };
 
-export const getIndividualsState = createFeatureSelector<fromIndividuals.State>('individuals');
+// individuals
 
-export const getIndividualIds = createSelector(getIndividualsState, fromIndividuals.getIds);
+export const getIndividualsState = createFeatureSelector<individuals.State>('individuals');
 
-export const getIndividualEntities = createSelector(getIndividualsState, fromIndividuals.getEntities);
+export const getIndividualIds = createSelector(getIndividualsState, individuals.getIds);
+
+export const getIndividualEntities = createSelector(getIndividualsState, individuals.getEntities);
 
 export const getIndividuals = createSelector(
   getIndividualIds,
@@ -31,3 +33,9 @@ export const getIndividuals = createSelector(
     return ids.map(id => entities[id]);
   }
 );
+
+// application form
+
+export const getApplicationFormState = createFeatureSelector<ApplicationForm>('applicationForm');
+
+export const getMinimumAge = createSelector(getApplicationFormState, applicationForm.getMinimumAge);

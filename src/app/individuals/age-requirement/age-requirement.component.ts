@@ -1,22 +1,25 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Store } from '@ngrx/store';
+
+import * as reducers from '../../state/reducers';
+import * as fromApplicationForm from '../../state/actions/application-form.actions';
 
 @Component({
   selector: 'app-age-requirement',
   templateUrl: './age-requirement.component.html'
 })
 export class AgeRequirementComponent implements OnInit {
-  allowUnderageIndividualsValue: boolean;
-  @Input() set allowUnderageIndividuals(allowUnderageIndividuals) {
-    this.allowUnderageIndividualsValue = allowUnderageIndividuals;
-  }
-  @Output() allowUnderageIndividualsValueChanged = new EventEmitter<boolean>();
+  minimumAge: number;
 
-  constructor() { }
+  constructor(private store: Store<reducers.State>) { }
 
   ngOnInit() {
+    this.store.select(reducers.getMinimumAge)
+      .take(1)
+      .subscribe(value => this.minimumAge = value);
   }
 
-  checkboxValueChanged(value: boolean) {
-    this.allowUnderageIndividualsValueChanged.emit(value);
+  minimumAgeChanged(value) {
+    this.store.dispatch(new fromApplicationForm.SetMinimumAge(+value));
   }
 }

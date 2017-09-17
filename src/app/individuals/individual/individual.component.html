@@ -1,8 +1,8 @@
 <form [formGroup]="form">
   <div>
-    <input formControlName="firstName" placeholder="First Name">
-    <input formControlName="lastName" placeholder="Last Name">
-    <input formControlName="age" placeholder="Age" size="2">
+    <input formControlName="firstName" placeholder="First Name" [ngClass]="{ 'error': hasError('firstName') }">
+    <input formControlName="lastName" placeholder="Last Name" [ngClass]="{ 'error': hasError('lastName') }">
+    <input formControlName="age" placeholder="Age" size="2" [ngClass]="{ 'error': hasError('age') }">
     <ng-content></ng-content>
   </div>
   <div>

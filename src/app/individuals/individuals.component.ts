@@ -15,9 +15,11 @@ import { Individual } from '../state/models/individual.model';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IndividualsComponent implements OnInit, OnDestroy {
+  @Input() submitted: boolean;
   individuals$: Observable<Individual[]>;
   individualsSubscription: Subscription;
   individualsFormArray: FormArray;
+  minimumAge$: Observable<number>;
 
   get valid() {
     return this.individualsFormArray.valid;
@@ -25,10 +27,11 @@ export class IndividualsComponent implements OnInit, OnDestroy {
 
   constructor(private store: Store<reducers.State>) {
     this.individuals$ = this.store.select(reducers.getIndividuals);
+    this.minimumAge$ = this.store.select(reducers.getMinimumAge);
   }
 
   ngOnInit() {
-    this.individualsFormArray = this.createIndividualsFormArray();
+    this.createIndividualsFormArray();
     this.setUpSubscriptions();
   }
 
@@ -37,14 +40,15 @@ export class IndividualsComponent implements OnInit, OnDestroy {
   }
 
   setUpSubscriptions() {
-    this.individualsSubscription = this.individuals$.subscribe(individuals => {
-      this.initIndividualsFormArray(individuals);
-    });
+    this.individualsSubscription = Observable.combineLatest(this.individuals$, this.minimumAge$,
+      (individuals, minimumAge) => individuals)
+      .subscribe(individuals => {
+        this.initIndividualsFormArray(individuals);
+      });
   }
 
-  createIndividualsFormArray(): FormArray {
-    this.individualsFormArray = new FormArray([]);
-    return this.individualsFormArray;
+  createIndividualsFormArray() {
+    this.individualsFormArray = new FormArray([], this.validateIndividualsArray);
   }
 
   clearIndividualsFormArray() {
@@ -79,6 +83,10 @@ export class IndividualsComponent implements OnInit, OnDestroy {
 
   removeIndividual(id: string): void {
     this.store.dispatch(new fromIndividual.RemoveIndividualByIdAction(id));
+  }
+
+  validateIndividualsArray(c: FormArray) {
+    return c.length < 1 ? { insufficientIndividuals: true } : null;
   }
 
   customTrackBy(index, item: FormControl) {

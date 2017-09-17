@@ -20,6 +20,7 @@ import { ApplicationForm } from './state/models/application-form';
 export class AppComponent implements OnInit {
   individuals$: Observable<Individual[]>;
   store$ = this.store.select(store => store);
+  submitted = false;
 
   constructor(private store: Store<reducers.State>,
     private formBuilder: FormBuilder) {
@@ -33,10 +34,12 @@ export class AppComponent implements OnInit {
   }
 
   updateApplicationForm($event) {
-    this.store.dispatch(new appFormActions.SetAllowUnderageIndividuals($event));
+    this.store.dispatch(new appFormActions.SetMinimumAge($event));
   }
 
   submit(individualsValid: boolean) {
+    this.submitted = true;
+
     console.log('individuals valid?', individualsValid);
   }
 }

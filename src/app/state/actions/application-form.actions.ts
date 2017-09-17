@@ -1,19 +1,11 @@
 import { Action } from '@ngrx/store';
 
-export const SET_ALLOW_UNDERAGE_INDIVIDUALS = '[ApplicationForm] Set Allow Underage Individuals';
-export const SET_SAVED = '[ApplicationForm] Set Saved';
+export const SET_MINIMUM_AGE = '[ApplicationForm] Set Minimum Age';
 
-export class SetAllowUnderageIndividuals implements Action {
-  readonly type = SET_ALLOW_UNDERAGE_INDIVIDUALS;
+export class SetMinimumAge implements Action {
+  readonly type = SET_MINIMUM_AGE;
 
-  constructor(public payload: boolean) { }
+  constructor(public payload: number) { }
 }
 
-export class SetSaved implements Action {
-  readonly type = SET_SAVED;
-
-  constructor(public payload: boolean) { }
-}
-
-export type Actions = SetAllowUnderageIndividuals |
-  SetSaved;
+export type Actions = SetMinimumAge;

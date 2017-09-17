@@ -1,4 +1,3 @@
 export interface ApplicationForm {
-  allowUnderageIndividuals: boolean;
-  saved: boolean;
+  minimumAge: number;
 }
