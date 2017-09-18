@@ -1,10 +1,10 @@
 import { NgModule, Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
-  selector: 'app-individuals',
+  selector: 'app-individuals-list',
   template: ''
 })
-export class IndividualsComponentMock {
+export class IndividualsListComponentMock {
   @Input() individuals: any;
   @Output() individualAdded: EventEmitter<any> = new EventEmitter();
   @Output() individualRemoved: EventEmitter<any> = new EventEmitter();
@@ -12,7 +12,7 @@ export class IndividualsComponentMock {
 }
 
 @NgModule({
-  declarations: [IndividualsComponentMock]
+  declarations: [IndividualsListComponentMock]
 })
 export class IndividualsComponentMockModule {
 }

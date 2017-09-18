@@ -1,12 +1,7 @@
-<div>
-  <button type="button" (click)="addIndividual()">Add</button>
-</div>
+<h2>Business Rules</h2>
+<app-age-requirement></app-age-requirement>
 
-<div *ngFor="let individual of individualsFormArray.controls; let i = index; trackBy: customTrackBy">
-  <app-individual [formControl]="individual" [submitted]="submitted" [minimumAge]="minimumAge$ | async">
-    <button type="button" (click)="removeIndividual(individual.value.id)">x</button>
-  </app-individual>
-</div>
+<h2>Individuals</h2>
+<app-individuals-list #individuals [submitted]="submitted"></app-individuals-list>
 
-<span *ngIf="individualsFormArray.hasError('insufficientIndividuals') && submitted" class="error">At least one individual must be added</span>
-<pre>Individuals (child) array is valid? <b>{{individualsFormArray.valid}}</b></pre>
+<button type="button" (click)="next(individuals.valid)">Next</button>

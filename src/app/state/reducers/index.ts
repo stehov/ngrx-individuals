@@ -8,14 +8,19 @@ import * as individuals from './individuals.reducer';
 import { ApplicationForm } from '../models/application-form';
 import * as applicationForm from './application-form.reducer';
 
+import { Question } from '../models/question.model';
+import * as questionnaire from './questionnaire.reducer';
+
 export interface State {
   individuals: individuals.State;
   applicationForm: ApplicationForm;
+  questionnaire: Question;
 }
 
 export const reducers: ActionReducerMap<State> = {
   individuals: individuals.reducer,
-  applicationForm: applicationForm.reducer
+  applicationForm: applicationForm.reducer,
+  questionnaire: questionnaire.reducer
 };
 
 // individuals
@@ -39,3 +44,9 @@ export const getIndividuals = createSelector(
 export const getApplicationFormState = createFeatureSelector<ApplicationForm>('applicationForm');
 
 export const getMinimumAge = createSelector(getApplicationFormState, applicationForm.getMinimumAge);
+
+// questionnaire
+
+export const getQuestionnaireState = createFeatureSelector<Question>('questionnaire');
+
+export const getQuestionnaire = createSelector(getQuestionnaireState, questionnaire.getQuestionnaire);

@@ -1,0 +1,14 @@
+<div *ngIf="!parentQuestion?.id || (form.get(parentQuestion.id).value === 'yes')">
+  <h3>{{question?.text}}</h3>
+
+  <div *ngIf="!!question.id && !!individual" [formGroup]="form">
+    <label><input type="radio" [formControlName]="question.id" value="yes">Yes</label>
+    <label><input type="radio" [formControlName]="question.id" value="no"> No</label>
+    <span *ngIf="hasError(question.id)" class="error">Required</span>
+  </div>
+
+  <div *ngIf="!!question && !!question.questions" [ngClass]="{ 'child-questions': !!question.id }">
+    <app-question *ngFor="let childQuestion of question.questions" [question]="childQuestion" [parentQuestion]="question" [individual]="individual"
+      [parentForm]="parentForm" [submitted]="submitted"></app-question>
+  </div>
+</div>

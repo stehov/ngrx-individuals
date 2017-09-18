@@ -1,95 +1,50 @@
-import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, Input, Output, EventEmitter, forwardRef } from '@angular/core';
-import { FormArray, FormControl } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import { UUID } from 'angular2-uuid';
 import { Store } from '@ngrx/store';
+import { UUID } from 'angular2-uuid';
 
 import * as reducers from '../state/reducers';
-import * as fromIndividual from '../state/actions/individual.actions';
+import * as individualActions from '../state/actions/individual.actions';
 import { Individual } from '../state/models/individual.model';
+
+import * as appFormActions from '../state/actions/application-form.actions';
+import { ApplicationForm } from '../state/models/application-form';
 
 @Component({
   selector: 'app-individuals',
   templateUrl: './individuals.component.html',
+  styleUrls: ['./individuals.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class IndividualsComponent implements OnInit, OnDestroy {
-  @Input() submitted: boolean;
+export class IndividualsComponent implements OnInit {
   individuals$: Observable<Individual[]>;
-  individualsSubscription: Subscription;
-  individualsFormArray: FormArray;
-  minimumAge$: Observable<number>;
+  store$: Observable<reducers.State>;
+  submitted = false;
 
-  get valid() {
-    return this.individualsFormArray.valid;
-  }
-
-  constructor(private store: Store<reducers.State>) {
-    this.individuals$ = this.store.select(reducers.getIndividuals);
-    this.minimumAge$ = this.store.select(reducers.getMinimumAge);
+  constructor(private store: Store<reducers.State>,
+    private formBuilder: FormBuilder,
+    private router: Router) {
+    this.individuals$ = store.select(reducers.getIndividuals);
   }
 
   ngOnInit() {
-    this.createIndividualsFormArray();
-    this.setUpSubscriptions();
   }
 
-  ngOnDestroy() {
-    this.individualsSubscription.unsubscribe();
+  loadDefaultIndividuals(): void {
+    this.store.dispatch(new individualActions.LoadIndividualsAction());
   }
 
-  setUpSubscriptions() {
-    this.individualsSubscription = Observable.combineLatest(this.individuals$, this.minimumAge$,
-      (individuals, minimumAge) => individuals)
-      .subscribe(individuals => {
-        this.initIndividualsFormArray(individuals);
-      });
+  updateApplicationForm($event) {
+    this.store.dispatch(new appFormActions.SetMinimumAge($event));
   }
 
-  createIndividualsFormArray() {
-    this.individualsFormArray = new FormArray([], this.validateIndividualsArray);
-  }
+  next(individualsValid: boolean) {
+    this.submitted = true;
 
-  clearIndividualsFormArray() {
-    while (this.individualsFormArray.length) {
-      this.individualsFormArray.removeAt(0);
+    if (individualsValid) {
+      this.router.navigateByUrl('questionnaire');
     }
-  }
-
-  initIndividualsFormArray(individuals: Individual[]) {
-    this.clearIndividualsFormArray();
-
-    individuals.forEach(individual => {
-      this.individualsFormArray.push(this.createIndividualControl(individual));
-    });
-  }
-
-  createIndividualControl(individual: Individual): FormControl {
-    const individualControl = new FormControl(individual);
-
-    individualControl.valueChanges
-      .subscribe(value => {
-        this.store.dispatch(new fromIndividual.UpdateIndividualAction(value));
-      });
-
-    return individualControl;
-  }
-
-  addIndividual(): void {
-    const newIndividual = { id: UUID.UUID(), firstName: '', lastName: '', age: undefined };
-    this.store.dispatch(new fromIndividual.AddIndividualAction(newIndividual));
-  }
-
-  removeIndividual(id: string): void {
-    this.store.dispatch(new fromIndividual.RemoveIndividualByIdAction(id));
-  }
-
-  validateIndividualsArray(c: FormArray) {
-    return c.length < 1 ? { insufficientIndividuals: true } : null;
-  }
-
-  customTrackBy(index, item: FormControl) {
-    return item.value.id;
   }
 }

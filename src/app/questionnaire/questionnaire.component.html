@@ -1,0 +1,13 @@
+<h2>Questionnaire</h2>
+
+<div *ngFor="let individual of individuals$ | async">
+  <i>For individual {{individual.firstName}} {{individual.lastName}}, age {{individual.age}}</i>
+  <app-question [question]="questionnaire$ | async" [individual]="individual" [parentForm]="form" [submitted]="submitted"></app-question>
+</div>
+
+<button type="button" (click)="back()">Back</button>
+<button type="button" (click)="submit()">Submit</button>
+
+<pre>form is valid? <b>{{form.valid}}</b></pre>
+<h2>Form</h2>
+<pre>{{form.value | json}}</pre>
