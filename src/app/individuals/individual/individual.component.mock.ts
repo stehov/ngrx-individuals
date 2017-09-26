@@ -1,4 +1,4 @@
-import { NgModule, Component, Input, Output, EventEmitter } from '@angular/core';
+import { NgModule, Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-individual',
@@ -6,7 +6,6 @@ import { NgModule, Component, Input, Output, EventEmitter } from '@angular/core'
 })
 export class IndividualComponentMock {
   @Input() individual: any;
-  @Output('updateIndividual') updateIndividualEmitter: EventEmitter<any> = new EventEmitter<any>();
 }
 
 @NgModule({

@@ -11,6 +11,7 @@ import {
 } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
+import { ValidatorService } from '../../core/validator/validator.service';
 
 import * as reducers from '../../state/reducers';
 import { AbstractValueAccessor } from '../../shared/abstract-value-accessor';
@@ -36,19 +37,27 @@ const INDIVIDUAL_VALIDATORS = {
     INDIVIDUAL_VALIDATORS
   ]
 })
-export class IndividualComponent extends AbstractValueAccessor implements OnInit, Validator {
+export class IndividualComponent extends AbstractValueAccessor implements OnInit, OnChanges, Validator {
   @Input() submitted = false;
   @Input() minimumAge: number;
   form: FormGroup;
 
   constructor(private formBuilder: FormBuilder,
-    private store: Store<reducers.State>) {
+    private store: Store<reducers.State>,
+    private validatorService: ValidatorService) {
     super();
+    this.initForm();
   }
 
   ngOnInit() {
-    this.initForm();
     this.handleChanges();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['minimumAge'] && !!changes['minimumAge'].currentValue) {
+      this.form.get('age').clearValidators();
+      this.form.get('age').setValidators(this.composeAgeValidator());
+    }
   }
 
   initForm() {
@@ -56,8 +65,16 @@ export class IndividualComponent extends AbstractValueAccessor implements OnInit
       id: '',
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
-      age: ['', Validators.compose([Validators.required, this.individualAgeValidator.bind(this)])]
+      age: ['', this.composeAgeValidator()]
     });
+  }
+
+  composeAgeValidator() {
+    return Validators.compose(
+      [
+        Validators.required,
+        this.validatorService.individualAgeValidator(this.minimumAge)
+      ]);
   }
 
   writeValue(value): void {
@@ -77,11 +94,7 @@ export class IndividualComponent extends AbstractValueAccessor implements OnInit
       (this.form.get(controlName).touched || this.submitted);
   }
 
-  individualAgeValidator(c: AbstractControl) {
-    return !this.minimumAge || +c.value >= this.minimumAge ? null : { individualMinimumAge: true };
-  };
-
-  validate(c: FormControl) {
+  validate(control: FormControl) {
     return this.form.valid ? null : { invalidIndividual: true };
   }
 }

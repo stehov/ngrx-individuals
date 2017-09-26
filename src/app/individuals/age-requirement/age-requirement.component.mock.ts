@@ -5,11 +5,7 @@ import { NgModule, Component, OnInit, Output, EventEmitter, Input } from '@angul
   template: ''
 })
 export class AgeRequirementComponentMock {
-  @Input() set allowUnderageIndividuals(allowUnderageIndividuals) {
-    this.allowUnderageIndividualsValue = allowUnderageIndividuals;
-  }
-  allowUnderageIndividualsValue: boolean;
-  @Output('allowUnderageIndividualsValueChanged') allowUnderageIndividualsValueChangedEmitter = new EventEmitter<boolean>();
+  @Input() minimumAge: number;
 }
 
 @NgModule({

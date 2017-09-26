@@ -21,6 +21,7 @@ import { AgeRequirementComponent } from './individuals/age-requirement/age-requi
 import { IndividualsComponent } from './individuals/individuals.component';
 import { QuestionnaireComponent } from './questionnaire/questionnaire.component';
 import { QuestionComponent } from './questionnaire/question/question.component';
+import { ValidatorService } from './core/validator/validator.service';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { QuestionComponent } from './questionnaire/question/question.component';
   ],
   providers: [
     IndividualsService,
-    QuestionnaireService
+    QuestionnaireService,
+    ValidatorService
   ],
   bootstrap: [AppComponent]
 })

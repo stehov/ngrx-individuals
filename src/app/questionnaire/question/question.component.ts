@@ -20,8 +20,6 @@ export class QuestionComponent implements OnInit {
   constructor(private formBuilder: FormBuilder) { }
 
   ngOnInit() {
-    console.log('i', this.individual);
-
     if (!!this.individual) {
       if (!this.parentForm.get(this.individual.id)) {
         this.parentForm.addControl(this.individual.id, this.formBuilder.group({}));
